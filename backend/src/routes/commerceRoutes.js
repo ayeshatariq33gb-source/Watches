@@ -1,0 +1,22 @@
+const express = require('express')
+const controller = require('../controllers/commerceController')
+const { protect } = require('../middleware/auth')
+const databaseRequired = require('../middleware/databaseRequired')
+
+const router = express.Router()
+router.use(databaseRequired, protect)
+router.get('/cart', controller.getCart)
+router.post('/cart/items', controller.addCartItem)
+router.put('/cart', controller.replaceCart)
+router.patch('/cart/items/:productId', controller.updateCartItem)
+router.delete('/cart/items/:productId', controller.removeCartItem)
+router.get('/wishlist', controller.getWishlist)
+router.post('/wishlist/items', controller.addWishlistItem)
+router.put('/wishlist', controller.replaceWishlist)
+router.delete('/wishlist/items/:productId', controller.removeWishlistItem)
+router.get('/orders', require('../controllers/orderRoutes').listMine)
+router.post('/orders', controller.createOrder)
+router.get('/orders/:orderId', controller.getOrder)
+router.patch('/orders/:orderId/cancel', controller.cancelOrder)
+
+module.exports = router

@@ -1,0 +1,32 @@
+import { useState } from 'react'
+import { Check, LockKeyhole } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { apiRequest } from '../api/client.js'
+import { useStore } from '../context/useStore.js'
+import { money } from '../data/products.js'
+
+export function CheckoutPage() {
+  const { cart, isSyncing, syncError, clearCart } = useStore()
+  const [method, setMethod] = useState('cash_on_delivery')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const [order, setOrder] = useState(null)
+  const [address, setAddress] = useState({ line1: '', line2: '', city: '', region: '', postalCode: '', country: '' })
+  const [card, setCard] = useState({ number: '', expiryMonth: '', expiryYear: '', cvc: '', cardholderName: '' })
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  async function submit(event) {
+    event.preventDefault(); setBusy(true); setError('')
+    try {
+      const result = await apiRequest('/orders', { method: 'POST', body: JSON.stringify({ paymentMethod: method, shippingAddress: address, ...(method === 'demo_card' ? { card } : {}) }) })
+      setOrder(result.order)
+      clearCart()
+    } catch (requestError) { setError(requestError.message) } finally { setBusy(false) }
+  }
+
+  if (order) return <section className="section-shell order-confirmation"><div className="confirmation-icon"><Check /></div><span className="eyebrow">ORDER RECEIVED</span><h1>Thank you for choosing <em>Aurel.</em></h1><p>Your order <strong>{order.orderNumber}</strong> is awaiting review by our team. Your payment has not been collected.</p><div className="confirmation-status"><span>ORDER STATUS</span><strong>PENDING APPROVAL</strong><span>{money(order.subtotal)} USD · {order.paymentMethod === 'demo_card' ? 'DEMO CARD' : 'CASH ON DELIVERY'}</span></div><Link className="button button-dark" to="/dashboard">VIEW YOUR ACCOUNT</Link></section>
+  if (isSyncing) return <section className="section-shell checkout-page"><div className="auth-loading">SYNCING YOUR BAG</div></section>
+  if (!cart.length) return <section className="section-shell checkout-page"><span className="eyebrow">YOUR BAG IS EMPTY</span><h1>Nothing to <em>check out.</em></h1><Link className="button button-dark" to="/collections">DISCOVER THE COLLECTION</Link></section>
+
+  return <section className="section-shell checkout-page"><span className="eyebrow">A MOMENT, MADE YOURS</span><h1>Delivery & <em>payment.</em></h1><div className="checkout-layout"><form className="dashboard-card checkout-form" onSubmit={submit}><h2>Delivery address</h2><div className="checkout-fields"><label>ADDRESS LINE 1<input required autoComplete="address-line1" value={address.line1} onChange={(event) => setAddress({ ...address, line1: event.target.value })} /></label><label>ADDRESS LINE 2<input autoComplete="address-line2" value={address.line2} onChange={(event) => setAddress({ ...address, line2: event.target.value })} /></label><div className="form-row"><label>CITY<input required autoComplete="address-level2" value={address.city} onChange={(event) => setAddress({ ...address, city: event.target.value })} /></label><label>REGION<input autoComplete="address-level1" value={address.region} onChange={(event) => setAddress({ ...address, region: event.target.value })} /></label></div><div className="form-row"><label>POSTAL CODE<input required autoComplete="postal-code" value={address.postalCode} onChange={(event) => setAddress({ ...address, postalCode: event.target.value })} /></label><label>COUNTRY<input required autoComplete="country-name" value={address.country} onChange={(event) => setAddress({ ...address, country: event.target.value })} /></label></div></div><h2>Payment</h2><div className="payment-options"><label className={method === 'cash_on_delivery' ? 'selected' : ''}><input type="radio" name="payment" value="cash_on_delivery" checked={method === 'cash_on_delivery'} onChange={() => setMethod('cash_on_delivery')} /><span>CASH ON DELIVERY</span><small>Pay when your watch arrives.</small></label><label className={method === 'demo_card' ? 'selected' : ''}><input type="radio" name="payment" value="demo_card" checked={method === 'demo_card'} onChange={() => setMethod('demo_card')} /><span>DEMO CARD</span><small>Sandbox validation only. No charge is made.</small></label></div>{method === 'demo_card' && <div className="checkout-fields card-fields"><label>CARDHOLDER NAME<input autoComplete="cc-name" value={card.cardholderName} onChange={(event) => setCard({ ...card, cardholderName: event.target.value })} /></label><label>TEST CARD NUMBER<input inputMode="numeric" autoComplete="cc-number" value={card.number} onChange={(event) => setCard({ ...card, number: event.target.value })} placeholder="Use test data only" /></label><div className="form-row"><label>EXPIRY MONTH<input inputMode="numeric" autoComplete="cc-exp-month" value={card.expiryMonth} onChange={(event) => setCard({ ...card, expiryMonth: event.target.value })} placeholder="MM" /></label><label>EXPIRY YEAR<input inputMode="numeric" autoComplete="cc-exp-year" value={card.expiryYear} onChange={(event) => setCard({ ...card, expiryYear: event.target.value })} placeholder="YYYY" /></label><label>SECURITY CODE<input inputMode="numeric" autoComplete="cc-csc" value={card.cvc} onChange={(event) => setCard({ ...card, cvc: event.target.value })} /></label></div><p className="demo-card-note"><LockKeyhole size={14} /> Demo only. Card details are validated and discarded, never stored or charged.</p></div>}{(error || syncError) && <p className="account-error" role="alert">{error || syncError}</p>}<button className="button button-dark checkout-submit" disabled={busy}>{busy ? 'PLACING ORDER…' : 'PLACE ORDER'} <Check size={15} /></button><p className="checkout-disclaimer">Order and payment status remain pending until reviewed by the store administrator.</p></form><aside className="order-summary"><span className="eyebrow">YOUR SELECTION</span><h2>Order summary</h2>{cart.map((item) => <div key={item.id}><span>{item.name} × {item.quantity}</span><strong>{money(item.price * item.quantity)}</strong></div>)}<div className="summary-total"><span>Subtotal</span><strong>{money(subtotal)}</strong></div><p>Complimentary insured delivery</p><Link to="/cart" className="continue-shopping">EDIT YOUR BAG</Link></aside></div></section>
+}
