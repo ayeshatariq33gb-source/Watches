@@ -13,7 +13,7 @@ export function SiteLayout() {
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
-  if (user?.role === 'admin' && location.pathname === '/admin') {
+  if (location.pathname === '/admin/login' || (user?.role === 'admin' && location.pathname === '/admin')) {
     return <main className="admin-route-shell"><Outlet /></main>
   }
   function search(event) {
