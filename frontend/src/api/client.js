@@ -1,4 +1,12 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1'
+const PRODUCTION_API_BASE_URL = 'https://watches-3yq6.onrender.com/api/v1'
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+const isLocalApiUrl = configuredApiBaseUrl && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/|$)/i.test(configuredApiBaseUrl)
+
+// A Vercel build cannot reach a developer's localhost. Fall back to Render if
+// the local example value was accidentally added to Vercel's environment.
+const API_BASE_URL = (import.meta.env.PROD && isLocalApiUrl
+  ? PRODUCTION_API_BASE_URL
+  : configuredApiBaseUrl || PRODUCTION_API_BASE_URL).replace(/\/+$/, '')
 
 export async function apiRequest(path, options = {}) {
   const token = options.token ?? localStorage.getItem('maison-aurel-token')

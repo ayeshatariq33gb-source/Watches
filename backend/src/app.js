@@ -12,13 +12,23 @@ const { apiLimiter } = require('./middleware/rateLimits')
 const { notFound, errorHandler } = require('./middleware/errorHandler')
 
 const app = express()
-const allowedOrigins = new Set((process.env.FRONTEND_URL || 'http://localhost:5173').split(',').map((origin) => origin.trim()).filter(Boolean))
+const configuredOrigins = (process.env.FRONTEND_URL || '').split(',')
+const allowedOrigins = new Set(['https://watches-tu81.vercel.app', 'http://localhost:5173', ...configuredOrigins]
+  .map((value) => value.trim())
+  .filter(Boolean)
+  .map((value) => {
+    try {
+      return new URL(value).origin
+    } catch {
+      return value.replace(/\/+$/, '')
+    }
+  }))
 
 app.disable('x-powered-by')
 if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1)
 app.use(helmet())
 app.use(cors({ origin(origin, callback) {
-  if (!origin || allowedOrigins.has(origin)) return callback(null, true)
+  if (!origin || allowedOrigins.has(origin.replace(/\/+$/, ''))) return callback(null, true)
   return callback(new Error('This origin is not allowed by CORS.'))
 }, credentials: true, methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }))
 app.use(express.json({ limit: '20kb', strict: true }))
