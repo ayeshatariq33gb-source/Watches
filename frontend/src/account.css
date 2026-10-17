@@ -145,3 +145,64 @@
 .review-sign-in .underlined-link { margin-top: 17px; }
 @media (max-width: 900px) { .admin-shell { grid-template-columns: 1fr; gap: 12px; } .admin-tabs { flex-direction: row; overflow-x: auto; border-bottom: 1px solid #ddd9cf; } .admin-tabs button { flex: 0 0 auto; } .admin-tabs button.active { box-shadow: inset 0 -2px #a88d61; } .admin-stat-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .admin-form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 700px) { .account-page { min-height: 560px; padding: 46px 18px 70px; } .account-panel { padding: 31px 21px; } .account-panel h1 { font-size: 42px; } .dashboard-page, .checkout-page { padding-top: 43px; padding-bottom: 65px; } .dashboard-header, .admin-topbar { align-items: flex-start; } .dashboard-header h1, .admin-topbar h1 { font-size: 38px; } .dashboard-layout, .checkout-layout, .product-reviews-layout { grid-template-columns: 1fr; gap: 14px; } .dashboard-card { padding: 19px; } .checkout-layout { margin-top: 20px; } .payment-options { grid-template-columns: 1fr; } .admin-page { padding: 31px 15px 60px; } .admin-topbar { padding-bottom: 18px; } .admin-topbar h1 { font-size: 34px; } .admin-tabs { margin-right: -15px; } .admin-tabs button { min-height: 37px; padding-inline: 9px; font-size: 8px; } .admin-tabs button svg { width: 13px; } .admin-overview-grid { grid-template-columns: 1fr; } .admin-management { padding: 14px; } .admin-management-heading { align-items: flex-start; } .admin-form-grid { grid-template-columns: 1fr 1fr; } .review-moderation-row { flex-direction: column; } .admin-actions { align-self: flex-start; } .category-create-form input { width: 100%; } }
+
+.admin-route-shell { min-height: 100vh; overflow-x: clip; }
+.admin-topbar-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; }
+.admin-back-link { min-height: 40px; padding: 0 13px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #d5d0c5; color: #4f4b42; background: #f8f7f3; font-size: 9px; letter-spacing: .6px; white-space: nowrap; }
+.admin-back-link:hover { border-color: #9a8052; color: #8b724b; }
+.admin-category-strip { min-height: 45px; margin-top: 15px; padding: 8px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; border: 1px solid #e0dcd3; background: #f8f7f3; }
+.admin-category-strip > span { margin-right: 5px; color: #817c72; font-size: 8px; letter-spacing: 1px; }
+.admin-category-strip button { min-height: 28px; padding: 0 10px; border: 1px solid #e4e0d7; color: #57534a; background: #f1f0eb; font-size: 9px; cursor: pointer; }
+.admin-category-strip button:hover { border-color: #a88d61; color: #8b724b; }
+.admin-category-strip .admin-manage-categories { margin-left: auto; border-color: transparent; color: #8b724b; background: transparent; font-size: 8px; letter-spacing: .7px; }
+.customer-status { display: inline-flex; min-width: 78px; min-height: 24px; align-items: center; justify-content: center; padding: 0 8px; border: 1px solid #d7ddd0; color: #536447; background: #f1f4ee; font-size: 8px; letter-spacing: .4px; }
+.customer-status.is-disabled { border-color: #e0d6d1; color: #875c50; background: #f7f0ed; }
+.customer-toggle { width: 92px; min-height: 36px; font-size: 8px; }
+.customer-toggle.is-enable { border-color: #bbc5b5; color: #4d6845; }
+.mobile-card-table { min-width: 680px; }
+@media (max-width: 900px) {
+  .admin-page { padding-inline: 24px; }
+  .admin-shell { grid-template-columns: minmax(0,1fr); }
+  .admin-tabs { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 6px; margin: 0; padding: 0 0 8px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+  .admin-tabs button { min-height: 44px; flex: 0 0 auto; padding-inline: 13px; white-space: nowrap; }
+  .admin-tabs button.active { box-shadow: inset 0 -2px #a88d61; }
+  .admin-stat-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+  .admin-page { padding: 24px 15px 50px; }
+  .admin-topbar { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .admin-topbar h1 { font-size: clamp(30px,8vw,38px); }
+  .admin-topbar-actions { width: 100%; justify-content: flex-start; }
+  .admin-back-link, .dashboard-logout { min-height: 42px; }
+  .admin-category-strip { align-items: flex-start; }
+  .admin-category-strip > span { width: 100%; padding-top: 3px; }
+  .admin-category-strip .admin-manage-categories { margin-left: 0; }
+  .admin-stat-grid { gap: 8px; }
+  .admin-stat-grid article { min-height: 88px; padding: 12px; }
+  .admin-stat-grid span { font-size: 7px; }
+  .admin-management { padding: 14px; }
+  .admin-management-heading { gap: 8px; }
+  .admin-management-heading h2 { font-size: 25px; }
+  .admin-create-form { padding: 13px; }
+  .admin-form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .admin-form-grid input, .admin-form-grid select { font-size: 16px; }
+  .category-create-form { align-items: stretch; flex-direction: column; }
+  .category-create-form input, .category-create-form .text-button { width: 100%; min-height: 42px; }
+  .customer-table, .mobile-card-table { min-width: 0; width: 100%; }
+  .mobile-card-table thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .mobile-card-table tbody { display: grid; gap: 10px; }
+  .mobile-card-table tbody tr { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 12px; padding: 8px 11px; border: 1px solid #e4e0d7; background: #fcfbf8; }
+  .mobile-card-table tbody td { display: grid; align-content: start; gap: 5px; min-width: 0; padding: 8px 2px; border: 0; overflow-wrap: anywhere; font-size: 11px; }
+  .mobile-card-table tbody td::before { content: attr(data-label); color: #817c72; font-size: 8px; letter-spacing: .7px; text-transform: uppercase; }
+  .mobile-card-table tbody td:last-child { grid-column: 1 / -1; }
+  .mobile-card-table .customer-toggle { width: 100%; min-height: 42px; }
+}
+@media (max-width: 380px) {
+  .admin-page { padding-inline: 11px; }
+  .admin-management { padding: 11px; }
+  .admin-topbar-actions { gap: 7px; }
+  .admin-back-link { padding-inline: 9px; font-size: 8px; }
+  .admin-category-strip { gap: 5px; padding-inline: 8px; }
+  .admin-category-strip button { padding-inline: 7px; }
+  .admin-stat-grid strong { font-size: 27px; }
+}

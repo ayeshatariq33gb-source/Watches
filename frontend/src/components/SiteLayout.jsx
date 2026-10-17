@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight, Heart, Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react'
 import { useStore } from '../context/useStore.js'
 import { useAuth } from '../context/useAuth.js'
@@ -7,11 +7,15 @@ import { useAuth } from '../context/useAuth.js'
 export function SiteLayout() {
   const { cart, wishlist } = useStore()
   const { user } = useAuth()
+  const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
+  if (user?.role === 'admin' && location.pathname === '/admin') {
+    return <main className="admin-route-shell"><Outlet /></main>
+  }
   function search(event) {
     event.preventDefault()
     navigate(`/collections${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ''}`)
